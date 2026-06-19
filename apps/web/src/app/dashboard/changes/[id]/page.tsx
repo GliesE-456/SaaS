@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { db } from '@cct/db';
+import { db, BRANDING } from '@cct/db';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -13,7 +13,7 @@ import { downloadSnapshot } from '@/lib/r2';
 import { diffLines } from 'diff';
 
 export const metadata: Metadata = {
-  title: 'Change Details | Competitor Change Tracker',
+  title: `Change Details | ${BRANDING.name}`,
 };
 
 export default async function ChangeDetailPage({ params }: { params: Promise<{ id: string }> }) {

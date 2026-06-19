@@ -3,12 +3,14 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
+import { BRANDING } from '@cct/db';
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-heading" });
 
 export const metadata: Metadata = {
-  title: "Competitor Change Tracker",
-  description: "Monitor competitor websites and receive alerts when changes happen.",
+  title: BRANDING.name,
+  description: BRANDING.longDescription,
 };
 
 export default function RootLayout({

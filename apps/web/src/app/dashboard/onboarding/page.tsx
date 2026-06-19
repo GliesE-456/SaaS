@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
-import { db } from '@cct/db';
+import { db, BRANDING } from '@cct/db';
 
 export const metadata: Metadata = {
-  title: 'Welcome | Competitor Change Tracker',
+  title: `Welcome | ${BRANDING.name}`,
   description: 'Set up your first tracked competitor',
 };
 

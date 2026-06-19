@@ -11,6 +11,8 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
+import { BRANDING } from '@cct/db';
+
 interface VerifyEmailEmailProps {
   verifyLink: string;
 }
@@ -19,13 +21,13 @@ export const VerifyEmailEmail = ({ verifyLink }: VerifyEmailEmailProps) => {
   return (
     <Html>
       <Head />
-      <Preview>Verify your email address for Competitor Change Tracker</Preview>
+      <Preview>Verify your email address for {BRANDING.name}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>Verify your email address</Heading>
           
           <Text style={text}>
-            Welcome to Competitor Change Tracker! Please verify your email address to ensure you receive change alerts reliably.
+            Welcome to {BRANDING.name}! Please verify your email address to ensure you receive change alerts reliably.
           </Text>
 
           <Section style={btnContainer}>
@@ -39,7 +41,7 @@ export const VerifyEmailEmail = ({ verifyLink }: VerifyEmailEmailProps) => {
           </Text>
 
           <Text style={footer}>
-            Competitor Change Tracker Team
+            {BRANDING.name} Team
           </Text>
         </Container>
       </Body>

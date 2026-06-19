@@ -3,10 +3,10 @@ import { auth } from '@/lib/auth';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { BillingCard } from '@/components/settings/BillingCard';
 import { LimitsCard } from '@/components/settings/LimitsCard';
-import { db } from '@cct/db';
+import { db, BRANDING } from '@cct/db';
 
 export const metadata: Metadata = {
-  title: 'Billing | Competitor Change Tracker',
+  title: `Billing | ${BRANDING.name}`,
   description: 'Manage your subscription and limits',
 };
 

@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Check, ArrowRight, ShieldCheck, Zap, Radar } from 'lucide-react';
 import { Metadata } from 'next';
+import { BRANDING } from '@cct/db';
 
 export const metadata: Metadata = {
-  title: 'Pricing | Competitor Change Tracker',
+  title: `Pricing | ${BRANDING.name}`,
   description: 'Choose the perfect plan to track competitor changes with real-time crawlers and AI summaries.',
 };
 
@@ -81,8 +82,9 @@ export default function PricingPage() {
     <div className="flex min-h-screen flex-col bg-background text-white">
       {/* Header */}
       <header className="px-4 lg:px-6 h-14 flex items-center border-b border-indigo-500/10 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <Link className="flex items-center justify-center font-heading font-bold text-lg text-primary tracking-tight" href="/">
-          Competitor Change Tracker
+        <Link className="flex items-center gap-2 font-heading font-extrabold text-2xl text-primary tracking-tight" href="/">
+          <Radar className="h-6 w-6 text-indigo-500 animate-pulse" />
+          <span>{BRANDING.name}</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link className="text-sm font-medium hover:text-primary transition-colors flex items-center" href="/pricing">
@@ -198,7 +200,7 @@ export default function PricingPage() {
       <footer className="border-t border-indigo-500/10 py-12">
         <div className="container px-4 mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Competitor Change Tracker. All rights reserved.
+            &copy; {new Date().getFullYear()} {BRANDING.name}. All rights reserved.
           </p>
           <nav className="flex gap-4 sm:gap-6">
             <Link className="text-xs hover:underline underline-offset-4 text-muted-foreground hover:text-foreground" href="/terms">

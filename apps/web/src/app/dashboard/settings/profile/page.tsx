@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { NotificationSettings } from '@/components/settings/NotificationSettings';
-import { db } from '@cct/db';
+import { db, BRANDING } from '@cct/db';
 
 export const metadata: Metadata = {
-  title: 'Profile Settings | Competitor Change Tracker',
+  title: `Profile Settings | ${BRANDING.name}`,
   description: 'Manage your profile and notification preferences',
 };
 

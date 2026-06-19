@@ -3,11 +3,11 @@ import { getCurrentUser } from '@/lib/auth';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { UrlList } from '@/components/urls/UrlList';
 import { AddUrlDialog } from '@/components/urls/AddUrlDialog';
-import { db } from '@cct/db';
+import { db, BRANDING } from '@cct/db';
 import { PLAN_LIMITS } from '@/lib/plan-limits';
 
 export const metadata: Metadata = {
-  title: 'Tracked URLs | Competitor Change Tracker',
+  title: `Tracked URLs | ${BRANDING.name}`,
   description: 'Manage the competitor pages you are tracking',
 };
 

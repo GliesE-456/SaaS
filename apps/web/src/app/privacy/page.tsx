@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { BRANDING } from '@cct/db';
+import { Radar } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Competitor Change Tracker',
-  description: 'Privacy Policy for Competitor Change Tracker.',
+  title: `Privacy Policy | ${BRANDING.name}`,
+  description: `Privacy Policy for ${BRANDING.name}.`,
 };
 
 export default function PrivacyPage() {
@@ -11,8 +13,9 @@ export default function PrivacyPage() {
     <div className="flex min-h-screen flex-col bg-background text-white">
       {/* Header */}
       <header className="px-4 lg:px-6 h-14 flex items-center border-b border-indigo-500/10 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <Link className="flex items-center justify-center font-heading font-bold text-lg text-primary tracking-tight" href="/">
-          Competitor Change Tracker
+        <Link className="flex items-center gap-2 font-heading font-extrabold text-2xl text-primary tracking-tight" href="/">
+          <Radar className="h-6 w-6 text-indigo-500 animate-pulse" />
+          <span>{BRANDING.name}</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link className="text-sm font-medium hover:text-primary transition-colors flex items-center" href="/pricing">
@@ -63,7 +66,7 @@ export default function PrivacyPage() {
 
       <footer className="border-t border-indigo-500/10 py-12">
         <div className="container px-4 mx-auto max-w-3xl flex justify-between gap-4 text-xs text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Competitor Change Tracker. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {BRANDING.name}. All rights reserved.</p>
           <nav className="flex gap-4">
             <Link href="/terms" className="hover:underline">Terms</Link>
             <Link href="/privacy" className="hover:underline">Privacy</Link>

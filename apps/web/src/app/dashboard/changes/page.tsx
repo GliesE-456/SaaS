@@ -3,8 +3,10 @@ import { getCurrentUser } from '@/lib/auth';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { ChangeList } from '@/components/changes/ChangeList';
 
+import { BRANDING } from '@cct/db';
+
 export const metadata: Metadata = {
-  title: 'Activity Feed | Competitor Change Tracker',
+  title: `Activity Feed | ${BRANDING.name}`,
   description: 'View all detected changes across your tracked competitors',
 };
 

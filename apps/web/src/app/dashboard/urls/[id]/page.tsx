@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
-import { db } from '@cct/db';
+import { db, BRANDING } from '@cct/db';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ import { formatRelativeTime } from '@/lib/utils';
 import { ChangeCard } from '@/components/changes/ChangeCard';
 
 export const metadata: Metadata = {
-  title: 'Competitor Details | Competitor Change Tracker',
+  title: `Competitor Details | ${BRANDING.name}`,
 };
 
 export default async function TrackedUrlDetailPage({ params }: { params: Promise<{ id: string }> }) {

@@ -12,6 +12,8 @@ import {
 } from '@react-email/components';
 import * as React from 'react';
 
+import { BRANDING } from '@cct/db';
+
 interface ChangeAlertEmailProps {
   workspaceId: string;
   urlId: string;
@@ -61,7 +63,7 @@ export const ChangeAlertEmail = ({
           </Section>
 
           <Text style={footer}>
-            You received this email because of your Notification Preferences in Competitor Change Tracker.
+            You received this email because of your Notification Preferences in {BRANDING.name}.
             <br />
             <Link href={`${dashboardUrl}/dashboard/settings/notifications`} style={link}>
               Manage Preferences

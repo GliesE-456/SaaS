@@ -3,10 +3,10 @@ import { auth } from '@/lib/auth';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { StatsBar } from '@/components/dashboard/StatsBar';
 import { ChangeList } from '@/components/changes/ChangeList';
-import { db } from '@cct/db';
+import { db, BRANDING } from '@cct/db';
 
 export const metadata: Metadata = {
-  title: 'Dashboard | Competitor Change Tracker',
+  title: `Dashboard | ${BRANDING.name}`,
   description: 'Overview of competitor changes',
 };
 

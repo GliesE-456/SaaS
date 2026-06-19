@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { ShieldAlert } from 'lucide-react';
 
+import { BRANDING } from '@cct/db';
+
 interface RobotsTxtWarningProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -29,7 +31,7 @@ export function RobotsTxtWarning({ open, onOpenChange, onConfirm, domain }: Robo
           <AlertDialogDescription>
             The website <strong>{domain}</strong> has a <code>robots.txt</code> file that asks automated crawlers not to read this page.
             <br /><br />
-            Competitor Change Tracker respects robots.txt by default. You can override this if you believe the rule does not apply or if you have permission to track this page.
+            {BRANDING.name} respects robots.txt by default. You can override this if you believe the rule does not apply or if you have permission to track this page.
             <br /><br />
             <span className="text-destructive font-medium">Warning:</span> Ignoring this may violate the site's Terms of Service. Proceed at your own risk.
           </AlertDialogDescription>
