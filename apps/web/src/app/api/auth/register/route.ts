@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     const hashedPassword = await hash(password, 12);
 
-    const user = await db.$transaction(async (tx) => {
+    const user = await db.$transaction(async (tx: any) => {
       const newUser = await tx.user.create({
         data: {
           email,

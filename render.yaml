@@ -4,7 +4,7 @@ services:
     name: cct-web
     env: node
     plan: free
-    buildCommand: pnpm install && pnpm --filter @cct/db build && pnpm --filter web build
+    buildCommand: pnpm install && pnpm --filter @cct/db db:generate && pnpm --filter web build
     startCommand: pnpm --filter web start
     envVars:
       - key: NODE_VERSION
