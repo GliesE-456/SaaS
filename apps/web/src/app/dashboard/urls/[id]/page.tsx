@@ -93,7 +93,7 @@ export default async function TrackedUrlDetailPage({ params }: { params: Promise
                 </Card>
               ) : (
                 <div className="grid gap-6">
-                  {urlRecord.changeEvents.map((change) => (
+                  {urlRecord.changeEvents.map((change: any) => (
                     // We render a wrapper to disable live mutation locally or use a placeholder reloader
                     <ChangeCard 
                       key={change.id} 
