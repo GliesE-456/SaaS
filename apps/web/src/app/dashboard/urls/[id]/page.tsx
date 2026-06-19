@@ -47,8 +47,8 @@ export default async function TrackedUrlDetailPage({ params }: { params: Promise
     notFound();
   }
 
-  const successfulRuns = urlRecord.checkRuns.filter(r => r.status === 'SUCCESS');
-  const failRuns = urlRecord.checkRuns.filter(r => r.status === 'FAILED');
+  const successfulRuns = urlRecord.checkRuns.filter((r: any) => r.status === 'SUCCESS');
+  const failRuns = urlRecord.checkRuns.filter((r: any) => r.status === 'FAILED');
 
   return (
     <div className="space-y-6 animate-in fade-in-50">
