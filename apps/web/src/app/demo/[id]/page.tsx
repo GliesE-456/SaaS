@@ -163,7 +163,7 @@ export default async function CompetitorDemoPage({ params }: PageProps) {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {featuresList.map((feature, i) => (
+            {featuresList.map((feature: string, i: number) => (
               <div
                 key={i}
                 className={`p-6 rounded-xl border border-gray-800/80 bg-gray-950/40 hover:bg-gray-950/60 transition-all ${borderGlow} flex items-start space-x-4`}
@@ -204,7 +204,7 @@ export default async function CompetitorDemoPage({ params }: PageProps) {
               <div className="border-t border-gray-800 my-8" />
 
               <ul className="space-y-4 mb-8">
-                {featuresList.map((feature, i) => (
+                {featuresList.map((feature: string, i: number) => (
                   <li key={i} className="flex items-center space-x-3 text-sm text-gray-300">
                     <Check className="w-4 h-4 text-indigo-400 shrink-0" />
                     <span>{feature}</span>
