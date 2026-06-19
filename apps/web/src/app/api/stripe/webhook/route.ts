@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { db } from '@cct/db';
 import { PLANS } from '@/lib/stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy', {
   apiVersion: '2025-02-24.acacia',
 });
 
