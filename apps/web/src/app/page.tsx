@@ -48,6 +48,9 @@ export default function LandingPage() {
                 <Button size="lg" className="h-12 px-8 text-base bg-indigo-500 hover:bg-indigo-600 shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)] transition-all hover:scale-105 animate-in fade-in zoom-in-95 duration-500" asChild>
                   <Link href="/sign-up">Start Tracking for Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
+                <Button size="lg" variant="outline" className="h-12 px-8 text-base border-indigo-500/30 hover:border-indigo-500 text-indigo-400 hover:bg-indigo-500/10 transition-all hover:scale-105" asChild>
+                  <Link href="/demo-dashboard/overview">Try the Demo Dashboard</Link>
+                </Button>
               </div>
             </div>
 
