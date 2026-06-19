@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Activity, CreditCard, LayoutDashboard, Settings, Globe, Wrench } from 'lucide-react';
+import { Activity, CreditCard, LayoutDashboard, Settings, Globe, Wrench, Radar } from 'lucide-react';
+import { BRANDING } from '@cct/db';
 
 const navItems = [
   {
@@ -47,9 +48,9 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col border-r bg-sidebar md:flex">
       <div className="flex h-14 items-center border-b px-6">
-        <Link href="/dashboard/overview" className="flex items-center gap-2 font-bold text-primary">
-          <Activity className="h-5 w-5" />
-          <span>Tracker</span>
+        <Link href="/" className="flex items-center gap-2 font-heading font-extrabold text-xl text-primary tracking-tight">
+          <Radar className="h-5 w-5 text-indigo-500 animate-pulse" />
+          <span>{BRANDING.name}</span>
         </Link>
       </div>
 

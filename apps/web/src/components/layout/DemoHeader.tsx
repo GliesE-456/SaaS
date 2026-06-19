@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Menu, ArrowRight } from 'lucide-react';
+import { Menu, ArrowRight, Radar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { BRANDING } from '@cct/db';
@@ -14,7 +14,8 @@ export function DemoHeader() {
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle menu</span>
         </Button>
-        <Link href="/demo-dashboard/overview" className="font-bold text-primary flex items-center gap-1.5">
+        <Link href="/" className="font-heading font-extrabold text-lg text-primary tracking-tight flex items-center gap-1.5">
+          <Radar className="h-5 w-5 text-indigo-500 animate-pulse" />
           <span>{BRANDING.name}</span>
           <span className="text-[9px] bg-indigo-500/20 text-indigo-400 font-bold px-1 rounded border border-indigo-500/30">
             DEMO

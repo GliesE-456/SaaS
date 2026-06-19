@@ -48,7 +48,7 @@ export function DemoSidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col border-r bg-sidebar md:flex">
       <div className="flex h-14 items-center border-b px-6">
-        <Link href="/demo-dashboard/overview" className="flex items-center gap-2 font-heading font-extrabold text-xl text-primary tracking-tight">
+        <Link href="/" className="flex items-center gap-2 font-heading font-extrabold text-xl text-primary tracking-tight">
           <Radar className="h-5 w-5 text-indigo-500 animate-pulse" />
           <span>{BRANDING.name}</span>
           <span className="text-[10px] bg-indigo-500/20 text-indigo-400 font-bold px-1.5 py-0.5 rounded border border-indigo-500/30">

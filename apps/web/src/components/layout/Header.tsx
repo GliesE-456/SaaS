@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Menu } from 'lucide-react';
+import { Menu, Radar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { BRANDING } from '@cct/db';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,8 +38,9 @@ export function Header({ user }: HeaderProps) {
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle menu</span>
         </Button>
-        <Link href="/dashboard/overview" className="font-bold text-primary">
-          Tracker
+        <Link href="/" className="font-heading font-extrabold text-lg text-primary tracking-tight flex items-center gap-1.5">
+          <Radar className="h-5 w-5 text-indigo-500 animate-pulse" />
+          <span>{BRANDING.name}</span>
         </Link>
       </div>
 
