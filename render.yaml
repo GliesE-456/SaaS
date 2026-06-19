@@ -1,0 +1,46 @@
+services:
+  # Next.js Web App
+  - type: web
+    name: cct-web
+    env: node
+    plan: free
+    buildCommand: pnpm install && pnpm --filter @cct/db build && pnpm --filter web build
+    startCommand: pnpm --filter web start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.0.0
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+
+  # Playwright Crawler Worker
+  - type: worker
+    name: cct-worker
+    env: docker
+    plan: free
+    dockerfilePath: apps/worker/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
