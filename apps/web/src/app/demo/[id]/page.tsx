@@ -67,8 +67,8 @@ export default async function CompetitorDemoPage({ params }: PageProps) {
 
   const featuresList = competitor.features
     .split('\n')
-    .map((f) => f.trim())
-    .filter((f) => f.length > 0);
+    .map((f: any) => f.trim())
+    .filter((f: any) => f.length > 0);
 
   // Styling helpers
   const isAlpha = id === 'competitor-alpha';
