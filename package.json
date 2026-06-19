@@ -1,0 +1,27 @@
+{
+  "name": "cct",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:web": "turbo run dev --filter=web",
+    "dev:worker": "turbo run dev --filter=worker",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "db:generate": "turbo run db:generate --filter=@cct/db",
+    "db:migrate": "turbo run db:migrate --filter=@cct/db",
+    "db:studio": "turbo run db:studio --filter=@cct/db",
+    "db:push": "turbo run db:push --filter=@cct/db"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.4"
+}

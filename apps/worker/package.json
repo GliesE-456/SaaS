@@ -1,0 +1,36 @@
+{
+  "name": "@cct/worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev -r dotenv/config src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@cct/db": "workspace:*",
+    "@react-email/components": "^0.0.31",
+    "@react-email/render": "^2.0.9",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "aws-sdk": "^2.1633.0",
+    "bullmq": "^5.7.8",
+    "diff": "^5.2.0",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "openai": "^4.47.1",
+    "playwright": "^1.44.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "resend": "^4.1.0",
+    "turndown": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/diff": "^5.2.1",
+    "@types/node": "^20.12.12",
+    "@types/turndown": "^5.0.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  }
+}

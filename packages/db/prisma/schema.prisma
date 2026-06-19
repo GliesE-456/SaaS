@@ -1,0 +1,562 @@
+// schema.prisma — CCT v2.0
+// Based on PRD Section 10 + ProcessedStripeEvent added (A10)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ════════════════════════════════════════════════
+// USERS & AUTH
+// ════════════════════════════════════════════════
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  emailVerified    DateTime?
+  passwordHash     String?
+  name             String?
+  avatarUrl        String?
+  role             UserRole  @default(USER)
+  stripeCustomerId String?   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  memberships WorkspaceMember[]
+  ownedWorkspaces Workspace[]         @relation("WorkspaceOwner")
+  apiKeys     ApiKey[]
+  notifPrefs  NotificationPreference[]
+  auditLogs   AuditLog[]
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  accessToken       String?  @db.Text
+  refreshToken      String?  @db.Text
+  expiresAt         Int?
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model EmailVerification {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ════════════════════════════════════════════════
+// WORKSPACES
+// Limits denormalized here — synced from Stripe webhooks.
+// No separate Plan table — eliminates dual-write risk.
+// ════════════════════════════════════════════════
+
+model Workspace {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  ownerId String
+
+  // Stripe billing state (cache — always sync from webhooks)
+  stripeCustomerId     String?    @unique
+  stripeSubscriptionId String?    @unique
+  stripePriceId        String?
+  planName             String     @default("free")
+  planStatus           PlanStatus @default(ACTIVE)
+
+  // Denormalized plan limits (synced on Stripe webhook)
+  maxUrls              Int      @default(3)
+  maxMembers           Int      @default(1)
+  maxWorkspaces        Int      @default(1)
+  maxAiSummariesMonth  Int      @default(10)
+  checkFreqOptions     String[] @default(["daily"])
+  historyRetentionDays Int      @default(7)
+
+  // Feature flags: {"slack":false,"webhook":false,"api":false,"csv":false}
+  featureFlags Json @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner        User              @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  members      WorkspaceMember[]
+  trackedUrls  TrackedUrl[]
+  changeEvents ChangeEvent[]
+  integrations Integration[]
+  auditLogs    AuditLog[]
+
+  @@index([ownerId])
+}
+
+model WorkspaceMember {
+  id          String        @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        WorkspaceRole @default(VIEWER)
+  invitedAt   DateTime      @default(now())
+  joinedAt    DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+}
+
+model Invite {
+  id          String        @id @default(cuid())
+  workspaceId String
+  email       String
+  role        WorkspaceRole @default(VIEWER)
+  token       String        @unique @default(cuid())
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime      @default(now())
+
+  @@index([workspaceId])
+  @@index([token])
+}
+
+// ════════════════════════════════════════════════
+// TRACKED URLS
+// ════════════════════════════════════════════════
+
+model TrackedUrl {
+  id          String @id @default(cuid())
+  workspaceId String
+
+  url            String
+  label          String         @db.VarChar(100)
+  competitorName String?        @db.VarChar(100)
+  category       UrlCategory    @default(OTHER)
+  status         UrlStatus      @default(ACTIVE)
+  checkFrequency CheckFrequency @default(DAILY)
+
+  // Noise control
+  noiseThreshold Float      @default(2.0)
+  notifyMode     NotifyMode @default(ALWAYS)
+
+  // Robots.txt compliance
+  robotsTxtAllowed    Boolean? // null=unchecked, true=allowed, false=blocked
+  robotsTxtOverridden Boolean  @default(false)
+
+  // State
+  lastCheckedAt    DateTime?
+  lastChangedAt    DateTime?
+  lastContentHash  String?   @db.VarChar(64)
+  consecutiveFails Int       @default(0)
+  nextCheckAt      DateTime?
+
+  // AI Competitor Profile Analysis
+  analysisText   String?        @db.Text
+  analysisStatus AiStatus       @default(PENDING)
+
+  // Soft delete
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  checkRuns    CheckRun[]
+  changeEvents ChangeEvent[]
+
+  @@unique([workspaceId, url])
+  @@index([nextCheckAt, status])
+  @@index([workspaceId, deletedAt])
+  @@index([workspaceId, competitorName])
+}
+
+// ════════════════════════════════════════════════
+// CHECK RUNS
+// Metadata only — content lives in R2.
+// ════════════════════════════════════════════════
+
+model CheckRun {
+  id           String      @id @default(cuid())
+  trackedUrlId String
+  status       CheckStatus
+
+  httpStatusCode Int?
+  contentHash    String?  @db.VarChar(64)
+  snapshotKey    String?  // R2: "snapshots/{wsId}/{urlId}/{checkRunId}.txt"
+  snapshotBytes  Int?
+  durationMs     Int?
+  errorMessage   String?  @db.VarChar(500)
+  robotsBlocked  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  trackedUrl  TrackedUrl   @relation(fields: [trackedUrlId], references: [id], onDelete: Cascade)
+  changeEvent ChangeEvent?
+
+  @@index([trackedUrlId, createdAt(sort: Desc)])
+  @@index([createdAt])
+}
+
+// ════════════════════════════════════════════════
+// CHANGE EVENTS
+// R2 references only — NO text blobs in Postgres.
+// cursorId enables cursor-based pagination.
+// ════════════════════════════════════════════════
+
+model ChangeEvent {
+  id           String @id @default(cuid())
+  workspaceId  String
+  trackedUrlId String
+  checkRunId   String @unique
+
+  // Change metrics
+  changePercent Float
+  impactScore   Int         @default(0)
+  impactLevel   ImpactLevel @default(LOW)
+  signals       String[]    @default([])
+
+  // R2 object keys
+  beforeKey     String
+  afterKey      String
+  screenshotKey String?
+
+  // AI enrichment (async — populated after alert sent)
+  aiStatus         AiStatus @default(PENDING)
+  aiSummary        String?  @db.Text
+  aiKeyChanges     String[] @default([])
+  aiBusinessImpact String?  @db.VarChar(1000)
+  aiRecommendation String?  @db.VarChar(500)
+  aiModel          String?  @db.VarChar(50)
+  aiProcessedAt    DateTime?
+  aiRetries        Int      @default(0)
+
+  // User interaction state
+  isRead     Boolean @default(false)
+  isArchived Boolean @default(false)
+
+  // Soft delete
+  deletedAt DateTime?
+
+  // Cursor field for efficient pagination
+  cursorId BigInt @default(autoincrement())
+
+  createdAt DateTime @default(now())
+
+  workspace  Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  trackedUrl TrackedUrl @relation(fields: [trackedUrlId], references: [id])
+  checkRun   CheckRun   @relation(fields: [checkRunId], references: [id])
+  alerts     Alert[]
+
+  @@index([workspaceId, cursorId(sort: Desc)])
+  @@index([workspaceId, isRead, cursorId(sort: Desc)])
+  @@index([trackedUrlId, cursorId(sort: Desc)])
+  @@index([workspaceId, impactLevel, cursorId(sort: Desc)])
+}
+
+// ════════════════════════════════════════════════
+// ALERTS
+// ════════════════════════════════════════════════
+
+model Alert {
+  id            String      @id @default(cuid())
+  changeEventId String
+  channel       AlertChannel
+  status        AlertStatus @default(PENDING)
+  sentAt        DateTime?
+  failureReason String?     @db.VarChar(500)
+  retries       Int         @default(0)
+
+  recipientEmail String? @db.VarChar(255)
+  webhookUrl     String? @db.VarChar(2048)
+  slackChannel   String? @db.VarChar(100)
+
+  createdAt DateTime @default(now())
+
+  changeEvent ChangeEvent @relation(fields: [changeEventId], references: [id], onDelete: Cascade)
+
+  @@index([changeEventId])
+  @@index([status, createdAt])
+}
+
+// ════════════════════════════════════════════════
+// NOTIFICATION PREFERENCES
+// Per USER per WORKSPACE — individual team member prefs.
+// ════════════════════════════════════════════════
+
+model NotificationPreference {
+  id          String @id @default(cuid())
+  userId      String
+  workspaceId String
+
+  emailEnabled Boolean         @default(true)
+  emailDigest  DigestFrequency @default(IMMEDIATE)
+
+  // Post-MVP fields (present in schema, gated in UI)
+  slackEnabled    Boolean     @default(false)
+  webhookEnabled  Boolean     @default(false)
+  minImpactLevel  ImpactLevel @default(LOW)
+  quietHoursStart String?
+  quietHoursEnd   String?
+  quietHoursTz    String      @default("UTC")
+
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@index([userId])
+}
+
+// ════════════════════════════════════════════════
+// INTEGRATIONS (Post-MVP)
+// ════════════════════════════════════════════════
+
+model Integration {
+  id          String          @id @default(cuid())
+  workspaceId String
+  type        IntegrationType
+  name        String          @db.VarChar(100)
+  isActive    Boolean         @default(true)
+
+  slackTeamId   String?
+  slackChannel  String?
+  slackBotToken String? @db.Text
+
+  webhookUrl    String? @db.VarChar(2048)
+  webhookSecret String? @db.VarChar(64)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+}
+
+// ════════════════════════════════════════════════
+// API KEYS (Post-MVP)
+// ════════════════════════════════════════════════
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  userId      String
+  workspaceId String
+  name        String    @db.VarChar(100)
+  keyHash     String    @unique
+  keyPrefix   String    @db.VarChar(12)
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([workspaceId])
+}
+
+// ════════════════════════════════════════════════
+// ROBOTS.TXT CACHE
+// Cached per domain, expires after 24h.
+// ════════════════════════════════════════════════
+
+model RobotsTxtCache {
+  domain    String   @id
+  content   String   @db.Text
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
+
+// ════════════════════════════════════════════════
+// MONTHLY USAGE
+// Composite PK — upsert-safe, no lock contention.
+// ════════════════════════════════════════════════
+
+model MonthlyUsage {
+  workspaceId String
+  month       String  // "2026-06"
+  checksRun   Int     @default(0)
+  aiSummaries Int     @default(0)
+  alertsSent  Int     @default(0)
+  bytesStored BigInt  @default(0)
+
+  @@id([workspaceId, month])
+}
+
+// ════════════════════════════════════════════════
+// AUDIT LOG
+// Append-only. Never deleted.
+// ════════════════════════════════════════════════
+
+model AuditLog {
+  id          BigInt   @id @default(autoincrement())
+  workspaceId String?
+  userId      String?
+  action      String
+  targetType  String?
+  targetId    String?
+  metadata    Json?
+  ip          String?  @db.VarChar(45)
+  userAgent   String?  @db.VarChar(300)
+  createdAt   DateTime @default(now())
+
+  user      User?      @relation(fields: [userId], references: [id])
+  workspace Workspace? @relation(fields: [workspaceId], references: [id])
+
+  @@index([workspaceId, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+// ════════════════════════════════════════════════
+// PROCESSED STRIPE EVENTS — Idempotency (A10)
+// ════════════════════════════════════════════════
+
+model ProcessedStripeEvent {
+  stripeEventId String   @id
+  processedAt   DateTime @default(now())
+}
+
+// ════════════════════════════════════════════════
+// ENUMS
+// ════════════════════════════════════════════════
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum WorkspaceRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum PlanStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+enum UrlCategory {
+  PRICING
+  FEATURES
+  PRODUCT
+  LANDING
+  TOS
+  BLOG
+  OTHER
+}
+
+enum UrlStatus {
+  ACTIVE
+  PAUSED
+  ERROR
+}
+
+enum CheckFrequency {
+  DAILY
+  SIX_HOURS
+  ONE_HOUR
+}
+
+enum NotifyMode {
+  ALWAYS
+  HIGH_IMPACT
+  NEVER
+}
+
+enum CheckStatus {
+  SUCCESS
+  FAILED
+  TIMEOUT
+  BLOCKED
+  ROBOTS_BLOCKED
+}
+
+enum ImpactLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AlertChannel {
+  EMAIL
+  SLACK
+  WEBHOOK
+}
+
+enum AlertStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum DigestFrequency {
+  IMMEDIATE
+  DAILY
+  WEEKLY
+}
+
+enum IntegrationType {
+  SLACK
+  WEBHOOK
+}
+
+enum AiStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+  SKIPPED
+}
+
+model DemoCompetitor {
+  id          String   @id // "competitor-alpha", "competitor-beta", "competitor-gamma"
+  name        String
+  pricing     String
+  features    String   // newline-separated features or JSON
+  description String
+  ctaText     String   @default("Get Started")
+  updatedAt   DateTime @updatedAt
+}
+
