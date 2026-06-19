@@ -56,7 +56,7 @@ export async function GET(req: Request) {
       nextCursor = nextItem!.id;
     }
 
-    const serializedChanges = changes.map((c) => ({
+    const serializedChanges = changes.map((c: any) => ({
       ...c,
       cursorId: c.cursorId.toString(),
     }));
