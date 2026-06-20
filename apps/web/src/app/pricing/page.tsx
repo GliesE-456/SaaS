@@ -1,103 +1,25 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Check, ArrowRight, ShieldCheck, Zap, Radar } from 'lucide-react';
+import { ShieldCheck, Zap, RotateCcw } from 'lucide-react';
 import { Metadata } from 'next';
 import { BRANDING } from '@cct/db';
+import { PublicHeader } from '@/components/layout/PublicHeader';
+import { PricingTiers } from '@/components/pricing/PricingTiers';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export const metadata: Metadata = {
   title: `Pricing | ${BRANDING.name}`,
-  description: 'Choose the perfect plan to track competitor changes with real-time crawlers and AI summaries.',
+  description: 'Simple, transparent pricing for competitor tracking. Choose a plan that suits your competitive intelligence needs. Cancel anytime.',
 };
-
-const PLANS_DATA = [
-  {
-    name: 'Free',
-    price: '$0',
-    description: 'Perfect for side projects and testing the waters.',
-    cta: 'Start for Free',
-    href: '/sign-up',
-    features: [
-      'Track up to 3 URLs',
-      '10 AI summaries per month',
-      'Daily crawls',
-      '7 days history retention',
-      'Email notifications',
-    ],
-    highlight: false,
-  },
-  {
-    name: 'Starter',
-    price: '$19',
-    description: 'Great for founders and growing indie startups.',
-    cta: 'Get Started',
-    href: '/sign-up?plan=starter',
-    features: [
-      'Track up to 25 URLs',
-      '200 AI summaries per month',
-      'Daily & 6-hour crawl frequencies',
-      '30 days history retention',
-      'Slack & Webhook alerts',
-      'Priority crawling queue',
-    ],
-    highlight: true,
-  },
-  {
-    name: 'Growth',
-    price: '$49',
-    description: 'Designed for professional product & marketing teams.',
-    cta: 'Upgrade to Growth',
-    href: '/sign-up?plan=growth',
-    features: [
-      'Track up to 100 URLs',
-      'Unlimited AI summaries',
-      'Hourly, 6-hour & daily crawls',
-      '90 days history retention',
-      'Slack, Webhook, and API access',
-      'CSV data exports',
-      'Up to 3 team members',
-    ],
-    highlight: false,
-  },
-  {
-    name: 'Agency',
-    price: '$199',
-    description: 'For agencies and large scale tracking requirements.',
-    cta: 'Contact Sales',
-    href: '/sign-up?plan=agency',
-    features: [
-      'Track up to 500 URLs',
-      'Unlimited AI summaries',
-      'Hourly crawls & priority support',
-      '365 days history retention',
-      'Full API & custom webhooks',
-      'CSV data exports',
-      'Up to 10 team members & 10 workspaces',
-    ],
-    highlight: false,
-  },
-];
 
 export default function PricingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-white">
-      {/* Header */}
-      <header className="px-4 lg:px-6 h-14 flex items-center border-b border-indigo-500/10 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <Link className="flex items-center gap-2 font-heading font-extrabold text-2xl text-primary tracking-tight" href="/">
-          <Radar className="h-6 w-6 text-indigo-500 animate-pulse" />
-          <span>{BRANDING.name}</span>
-        </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-sm font-medium hover:text-primary transition-colors flex items-center" href="/pricing">
-            Pricing
-          </Link>
-          <Link className="text-sm font-medium hover:text-primary transition-colors flex items-center" href="/sign-in">
-            Log in
-          </Link>
-          <Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/sign-up">Get Started</Link>
-          </Button>
-        </nav>
-      </header>
+      <PublicHeader />
 
       <main className="flex-1 py-16 md:py-24 relative overflow-hidden">
         {/* Background Gradients */}
@@ -116,76 +38,26 @@ export default function PricingPage() {
             </p>
           </div>
 
-          {/* Pricing Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-            {PLANS_DATA.map((plan) => (
-              <div 
-                key={plan.name} 
-                className={`rounded-2xl border bg-slate-950/40 p-6 flex flex-col justify-between relative backdrop-blur-md shadow-xl transition-all hover:border-indigo-500/40 ${
-                  plan.highlight 
-                    ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-indigo-500/10' 
-                    : 'border-indigo-500/10'
-                }`}
-              >
-                {plan.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
-                    Most Popular
-                  </span>
-                )}
-
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-                    <p className="text-xs text-muted-foreground mt-1.5 min-h-[32px]">{plan.description}</p>
-                  </div>
-
-                  <div className="flex items-baseline">
-                    <span className="text-4xl font-extrabold font-mono text-white">{plan.price}</span>
-                    <span className="text-xs text-muted-foreground ml-1">/month</span>
-                  </div>
-
-                  <hr className="border-indigo-500/10" />
-
-                  <ul className="space-y-3 text-xs text-slate-300">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <Check className="h-4 w-4 text-indigo-400 mt-0.5 shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="pt-6">
-                  <Button 
-                    asChild 
-                    className={`w-full h-10 ${
-                      plan.highlight 
-                        ? 'bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/25' 
-                        : 'bg-slate-900 hover:bg-slate-850 text-white border border-indigo-500/10'
-                    }`}
-                  >
-                    <Link href={plan.href}>
-                      {plan.cta}
-                      <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <PricingTiers />
 
           {/* Secure / Payment Trust Badges */}
-          <div className="border border-indigo-500/10 rounded-2xl bg-slate-950/20 p-6 flex flex-col sm:flex-row items-center justify-around gap-6 text-center sm:text-left max-w-3xl mx-auto">
+          <div className="border border-indigo-500/10 rounded-2xl bg-slate-950/20 p-6 flex flex-col md:flex-row items-center justify-around gap-6 text-center md:text-left max-w-4xl mx-auto">
             <div className="flex items-center gap-3">
-              <ShieldCheck className="h-8 w-8 text-indigo-400" />
+              <ShieldCheck className="h-8 w-8 text-indigo-400 shrink-0" />
               <div>
                 <h4 className="font-bold text-sm text-white">SSL Encrypted Checkout</h4>
-                <p className="text-xs text-muted-foreground">All transactions are secured by Stripe.</p>
+                <p className="text-xs text-muted-foreground">All transactions are fully secured.</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Zap className="h-8 w-8 text-indigo-400" />
+              <RotateCcw className="h-8 w-8 text-indigo-400 shrink-0" />
+              <div>
+                <h4 className="font-bold text-sm text-white">7-Day Refund Guarantee</h4>
+                <p className="text-xs text-muted-foreground">100% risk-free. No questions asked.</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Zap className="h-8 w-8 text-indigo-400 shrink-0" />
               <div>
                 <h4 className="font-bold text-sm text-white">Instant Activation</h4>
                 <p className="text-xs text-muted-foreground">Get access to your plan limits immediately.</p>
@@ -193,23 +65,72 @@ export default function PricingPage() {
             </div>
           </div>
 
+          {/* FAQ Section */}
+          <div className="max-w-4xl mx-auto mt-16 space-y-8 border-t border-indigo-500/10 pt-16">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-heading font-bold mb-4">Frequently Asked Questions</h2>
+              <p className="text-muted-foreground">Everything you need to know about billing and features.</p>
+            </div>
+
+            <Accordion type="single" collapsible className="w-full text-left">
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-left font-semibold">How does cancellation work?</AccordionTrigger>
+                <AccordionContent className="text-slate-400 leading-relaxed">
+                  You can cancel your subscription at any time with a single click from your Billing Settings page. Once canceled, your billing stops immediately. Your paid plan limits and features will remain fully active until the end of your current billing cycle.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger className="text-left font-semibold">What is the money-back guarantee?</AccordionTrigger>
+                <AccordionContent className="text-slate-400 leading-relaxed">
+                  If you upgrade to any paid plan and decide it's not the right fit for your team within the first 7 days, just contact our support team at <a href={`mailto:${BRANDING.supportEmail}`} className="text-indigo-400 hover:underline">{BRANDING.supportEmail}</a>. We will refund your payment in full, no questions asked.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger className="text-left font-semibold">Does it work on JavaScript/SPA websites?</AccordionTrigger>
+                <AccordionContent className="text-slate-400 leading-relaxed">
+                  Yes. OutScout runs a full headless browser (Puppeteer/Playwright) to render the page exactly as a human sees it, executing all JavaScript before taking a snapshot and extracting the DOM. This means we can track Next.js, React, Vue, and Angular sites perfectly.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-4">
+                <AccordionTrigger className="text-left font-semibold">Can I export my data?</AccordionTrigger>
+                <AccordionContent className="text-slate-400 leading-relaxed">
+                  Yes. Growth and Agency tier customers can export all historical change logs, raw text diffs, and AI summaries to CSV formats at any time. We believe your competitive intelligence data belongs to you.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-indigo-500/10 py-12">
-        <div className="container px-4 mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} {BRANDING.name}. All rights reserved.
-          </p>
-          <nav className="flex gap-4 sm:gap-6">
-            <Link className="text-xs hover:underline underline-offset-4 text-muted-foreground hover:text-foreground" href="/terms">
-              Terms
-            </Link>
-            <Link className="text-xs hover:underline underline-offset-4 text-muted-foreground hover:text-foreground" href="/privacy">
-              Privacy
-            </Link>
-          </nav>
+      <footer className="border-t border-indigo-500/10 py-12 bg-slate-950">
+        <div className="container px-4 md:px-6 mx-auto max-w-6xl">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted-foreground">
+                &copy; {new Date().getFullYear()} {BRANDING.name}. All rights reserved.
+              </p>
+              <p className="text-xs text-slate-500 mt-1">Built with ❤️ by a solo founder.</p>
+            </div>
+            
+            <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6">
+              <a href={`mailto:${BRANDING.supportEmail}`} className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">
+                {BRANDING.supportEmail}
+              </a>
+              <a href="https://twitter.com/outscout_app" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors" target="_blank" rel="noreferrer">
+                @outscout_app
+              </a>
+              <nav className="flex gap-4 sm:gap-6 border-l border-slate-800 pl-6">
+                <Link className="text-sm hover:underline underline-offset-4 text-muted-foreground hover:text-foreground" href="/terms">
+                  Terms
+                </Link>
+                <Link className="text-sm hover:underline underline-offset-4 text-muted-foreground hover:text-foreground" href="/privacy">
+                  Privacy
+                </Link>
+              </nav>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

@@ -9,8 +9,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-heading" });
 
 export const metadata: Metadata = {
-  title: BRANDING.name,
-  description: BRANDING.longDescription,
+  title: {
+    default: BRANDING.name,
+    template: `%s | ${BRANDING.name}`
+  },
+  description: "OutScout monitors your competitors' websites 24/7 and sends you AI-powered summaries the moment pricing, features, or messaging changes.",
 };
 
 export default function RootLayout({

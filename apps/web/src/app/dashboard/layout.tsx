@@ -20,7 +20,9 @@ export default async function DashboardLayout({
   return (
     <>
       {!dbUser?.emailVerified && user.email && (
-        <EmailVerificationBanner email={user.email} />
+        <div className="md:ml-64">
+          <EmailVerificationBanner email={user.email} />
+        </div>
       )}
       <DashboardShell user={user}>
         {children}

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -19,12 +19,14 @@ const signInSchema = z.object({
 
 type FormData = z.infer<typeof signInSchema>;
 
-export function SignInForm() {
+interface SignInFormProps {
+  callbackUrl?: string;
+}
+
+export function SignInForm({ callbackUrl = '/dashboard/overview' }: SignInFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState(false);
-  const callbackUrl = searchParams?.get('callbackUrl') || '/dashboard/overview';
 
   const {
     register,
